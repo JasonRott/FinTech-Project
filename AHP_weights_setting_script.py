@@ -27,7 +27,7 @@ def generate_ahp_inputs(target_main_weights, target_sub_weights):
     main_comparisons = []
     for i in range(len(main_criteria)):
         for j in range(i + 1, len(main_criteria)):
-            val = main_w[main_criteria[i]] / main_w[main_criteria[j]]
+            val = main_w[main_criteria[i]] / (main_w[main_criteria[j]] + 1e-9)  # 加小數避免除以零
             main_comparisons.append(round(val, 4))
 
     # 3. 產生子維度比較值
@@ -35,7 +35,7 @@ def generate_ahp_inputs(target_main_weights, target_sub_weights):
     for main_cat, subs in target_sub_weights.items():
         keys = list(subs.keys())
         if len(keys) == 2: # 針對有兩個子特徵的維度
-            val = subs[keys[0]] / subs[keys[1]]
+            val = subs[keys[0]] / (subs[keys[1]] + 1e-9)  # 加小數避免除以零
             sub_comparisons[main_cat] = [round(val, 4)]
 
     # 4. 輸出可以直接貼上程式碼的 Python 字典格式
@@ -51,17 +51,17 @@ def generate_ahp_inputs(target_main_weights, target_sub_weights):
 # ==========================================
 
 TARGET_MAIN_WEIGHTS = {
-    "Return_Main": 30,    # 報酬佔 30%
-    "Risk_Main": 40,      # 風險佔 40% (極度保守)
-    "Cost_Main": 10,      # 成本佔 10%
-    "Liquidity_Main": 5,  # 流動性佔 5%
-    "Diversity_Main": 10, # 分散度佔 10%
-    "Sentiment_Main": 5   # 情感佔 5%
+    "Return_Main": 80,    # 報酬佔 30%
+    "Risk_Main": 10,      # 風險佔 40% (極度保守)
+    "Cost_Main": 5,      # 成本佔 10%
+    "Liquidity_Main": 3,  # 流動性佔 5%
+    "Diversity_Main": 2, # 分散度佔 10%
+    "Sentiment_Main": 0   # 情感佔 5%
 }
 
 TARGET_SUB_WEIGHTS = {
-    "Return_Main": {"CAGR": 7, "Div": 3},        # 歷史報酬 70%，殖利率 30%
-    "Risk_Main": {"Vol": 8, "MaxDD": 2},         # 抗波動 80%，抗回撤 20%
+    "Return_Main": {"CAGR": 9.9, "Div": 0.1},        # 歷史報酬 70%，殖利率 30%
+    "Risk_Main": {"Vol": 9.9, "MaxDD": 0.1},         # 抗波動 80%，抗回撤 20%
     "Liquidity_Main": {"Volume": 5, "AUM": 5}    # 交易量 50%，資產規模 50%
 }
 
