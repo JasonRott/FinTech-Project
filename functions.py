@@ -1310,7 +1310,7 @@ class TwoLevel_AHP_Model:
         idx = 0
         for i in range(n):
             for j in range(i + 1, n):
-                val = comparisons[idx]
+                val = comparisons[idx] + 1e-6  # 加入微小值防止除以零
                 matrix[i, j] = val
                 matrix[j, i] = 1.0 / val
                 idx += 1
@@ -1320,14 +1320,14 @@ class TwoLevel_AHP_Model:
         max_eigenvalue = np.real(eigenvalues[max_idx])
         eigenvector = np.real(eigenvectors[:, max_idx])
         
-        weights = eigenvector / np.sum(eigenvector)
+        weights = eigenvector / (np.sum(eigenvector) + 1e-6)  # 加入微小值防止除以零
         
         # 當 n<=2 時，CR 理論上恆為 0，且 RI 為 0 無法相除，因此直接回傳 CR=0
         if n <= 2:
             CR = 0.0
         else:
             CI = (max_eigenvalue - n) / (n - 1)
-            CR = CI / self.RI_dict[n]
+            CR = CI / (self.RI_dict[n] + 1e-6)  # 加入微小值防止除以零
             
         return weights, CR
 
