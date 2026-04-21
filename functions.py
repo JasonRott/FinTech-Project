@@ -9,13 +9,19 @@ import json
 from yahooquery import Ticker
 import parameters
 from datetime import datetime, timedelta
-from transformers import pipeline
+from transformers import pipeline, AutoModelForSequenceClassification, AutoTokenizer, logging as hf_logging
 import matplotlib.pyplot as plt
 import seaborn as sns
 from scipy.optimize import linprog
 from scipy.optimize import minimize
 import logging
 import sys
+from pathlib import Path
+
+# 使用 hf_logging 設定 transformers 的日誌層級
+hf_logging.set_verbosity_error()
+# 2. 隱藏載入模型時的進度條 (tqdm)
+hf_logging.disable_progress_bar()
 
 # --- 配置 Standard Logging ---
 VERBOSE = parameters.VERBOSE  # 從參數設定讀取 Verbose 模式開關
@@ -618,6 +624,24 @@ def append_sentiment_to_csv(csv_filepath=parameters.YQ_OUTPUT_FILE, max_age_days
     # 讀取 CSV 後，檢查哪些 ETF 已經算過了
     if 'FinBERT_score' not in df.columns:
         df['FinBERT_score'] = np.nan # 初始化空欄位
+    
+    log.info("⏳ 載入本地 FinBERT 模型中...")
+    if not Path("local_finbert").is_dir():
+        # 1. 首次聯網下載模型與 Tokenizer
+        log.info("⏳ 首次使用，正在下載 FinBERT 模型...")
+        model_name = "ProsusAI/finbert"
+        model = AutoModelForSequenceClassification.from_pretrained(model_name)
+        tokenizer = AutoTokenizer.from_pretrained(model_name)
+
+        # 2. 儲存到本地端資料夾 (例如命名為 local_finbert)
+        model.save_pretrained("./local_finbert")
+        tokenizer.save_pretrained("./local_finbert")
+        log.info("✅ FinBERT 模型下載並儲存完成！")
+
+    # ==========================================
+    # 之後你每次要測試時，只需要指向本地資料夾即可：
+    finbert = pipeline("sentiment-analysis", model="./local_finbert", tokenizer="./local_finbert") # 預載入 FinBERT 模型，避免重複載入浪費時間
+    log.info("✅ FinBERT 模型載入完成。")
 
     for i, ticker in enumerate(etf_list, 1):
         # 取得該 ETF 所在的列索引 (確保修改對齊)
@@ -644,9 +668,6 @@ def append_sentiment_to_csv(csv_filepath=parameters.YQ_OUTPUT_FILE, max_age_days
             
         # 若無快取或已過期，則執行 API 抓取與 NLP 推論
         log.info(f"[{i:03d}/{total}] {ticker:<5} {status_msg}，執行 API 抓取與 NLP 推論...")
-        log.info("⏳ 載入本地 FinBERT 模型中...")
-        finbert = pipeline("sentiment-analysis", model="./local_finbert", tokenizer="./local_finbert") # 預載入 FinBERT 模型，避免重複載入浪費時間
-        log.info("✅ FinBERT 模型載入完成。")
         score = calculate_macro_sentiment(ticker, finbert=finbert)
         
         # 將新分數與當下日期寫回 DataFrame
