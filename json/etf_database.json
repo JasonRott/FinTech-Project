@@ -1504,5 +1504,380 @@
         "Top3_Weight": -1.0,
         "Sector_Weights": {},
         "Last_Updated": "2026-04-20"
+    },
+    "IWV": {
+        "Sector_HHI": 0.1739,
+        "Top3_Weight": 0.1832,
+        "Sector_Weights": {
+            "INFORMATION TECHNOLOGY": 0.333333,
+            "FINANCIALS": 0.129925,
+            "CONSUMER DISCRETIONARY": 0.109691,
+            "INDUSTRIALS": 0.101171,
+            "COMMUNICATION SERVICES": 0.099042,
+            "HEALTHCARE": 0.094782,
+            "CONSUMER STAPLES": 0.052183,
+            "ENERGY": 0.031949,
+            "UTILITIES": 0.025559,
+            "MATERIALS": 0.022364
+        },
+        "Last_Updated": "2026-04-21"
+    },
+    "COWZ": {
+        "Sector_HHI": 0.1489,
+        "Top3_Weight": 0.0651,
+        "Sector_Weights": {
+            "HEALTHCARE": 0.220322,
+            "INFORMATION TECHNOLOGY": 0.177062,
+            "ENERGY": 0.165996,
+            "INDUSTRIALS": 0.118712,
+            "CONSUMER DISCRETIONARY": 0.095573,
+            "CONSUMER STAPLES": 0.094567,
+            "COMMUNICATION SERVICES": 0.087525,
+            "MATERIALS": 0.040241,
+            "UTILITIES": 0.0,
+            "FINANCIALS": 0.0,
+            "REAL ESTATE": 0.0
+        },
+        "Last_Updated": "2026-04-21"
+    },
+    "VONV": {
+        "Sector_HHI": 0.1167,
+        "Top3_Weight": 0.0729,
+        "Sector_Weights": {
+            "FINANCIALS": 0.177754,
+            "INDUSTRIALS": 0.147219,
+            "HEALTHCARE": 0.12868,
+            "INFORMATION TECHNOLOGY": 0.126499,
+            "COMMUNICATION SERVICES": 0.087241,
+            "CONSUMER STAPLES": 0.08506,
+            "CONSUMER DISCRETIONARY": 0.079607,
+            "ENERGY": 0.070883,
+            "UTILITIES": 0.049073,
+            "MATERIALS": 0.047983,
+            "REAL ESTATE": 0.0
+        },
+        "Last_Updated": "2026-04-21"
+    },
+    "VOT": {
+        "Sector_HHI": 0.1714,
+        "Top3_Weight": 0.0715,
+        "Sector_Weights": {
+            "INDUSTRIALS": 0.24866,
+            "INFORMATION TECHNOLOGY": 0.241158,
+            "CONSUMER DISCRETIONARY": 0.153269,
+            "HEALTHCARE": 0.11254,
+            "FINANCIALS": 0.101822,
+            "COMMUNICATION SERVICES": 0.042872,
+            "UTILITIES": 0.038585,
+            "ENERGY": 0.032154,
+            "MATERIALS": 0.020364,
+            "CONSUMER STAPLES": 0.008574,
+            "REAL ESTATE": 0.0
+        },
+        "Last_Updated": "2026-04-21"
+    },
+    "SPEM": {
+        "Sector_HHI": -1.0,
+        "Top3_Weight": -1.0,
+        "Sector_Weights": {},
+        "Last_Updated": "2026-04-21"
+    },
+    "SPHQ": {
+        "Sector_HHI": 0.1926,
+        "Top3_Weight": 0.1386,
+        "Sector_Weights": {
+            "INFORMATION TECHNOLOGY": 0.283433,
+            "INDUSTRIALS": 0.244511,
+            "CONSUMER STAPLES": 0.151697,
+            "FINANCIALS": 0.133733,
+            "HEALTHCARE": 0.091816,
+            "CONSUMER DISCRETIONARY": 0.048902,
+            "MATERIALS": 0.023952,
+            "UTILITIES": 0.00998,
+            "ENERGY": 0.006986,
+            "COMMUNICATION SERVICES": 0.00499,
+            "REAL ESTATE": 0.0
+        },
+        "Last_Updated": "2026-04-21"
+    },
+    "SPMD": {
+        "Sector_HHI": 0.1587,
+        "Top3_Weight": 0.0256,
+        "Sector_Weights": {
+            "INDUSTRIALS": 0.282536,
+            "FINANCIALS": 0.170189,
+            "INFORMATION TECHNOLOGY": 0.130145,
+            "CONSUMER DISCRETIONARY": 0.119021,
+            "HEALTHCARE": 0.093437,
+            "MATERIALS": 0.065628,
+            "ENERGY": 0.05228,
+            "CONSUMER STAPLES": 0.038932,
+            "UTILITIES": 0.036707,
+            "COMMUNICATION SERVICES": 0.011123,
+            "REAL ESTATE": 0.0
+        },
+        "Last_Updated": "2026-04-21"
+    },
+    "VHT": {
+        "Sector_HHI": 1.0,
+        "Top3_Weight": 0.2741,
+        "Sector_Weights": {
+            "HEALTHCARE": 1.0,
+            "INFORMATION TECHNOLOGY": 0.0,
+            "COMMUNICATION SERVICES": 0.0,
+            "CONSUMER DISCRETIONARY": 0.0,
+            "CONSUMER STAPLES": 0.0,
+            "INDUSTRIALS": 0.0,
+            "MATERIALS": 0.0,
+            "UTILITIES": 0.0,
+            "ENERGY": 0.0,
+            "FINANCIALS": 0.0,
+            "REAL ESTATE": 0.0
+        },
+        "Last_Updated": "2026-04-21"
+    },
+    "FTEC": {
+        "Sector_HHI": 1.0,
+        "Top3_Weight": 0.4339,
+        "Sector_Weights": {
+            "INFORMATION TECHNOLOGY": 1.0,
+            "COMMUNICATION SERVICES": 0.0,
+            "CONSUMER DISCRETIONARY": 0.0,
+            "HEALTHCARE": 0.0,
+            "CONSUMER STAPLES": 0.0,
+            "INDUSTRIALS": 0.0,
+            "MATERIALS": 0.0,
+            "UTILITIES": 0.0,
+            "ENERGY": 0.0,
+            "FINANCIALS": 0.0,
+            "REAL ESTATE": 0.0
+        },
+        "Last_Updated": "2026-04-21"
+    },
+    "DFAI": {
+        "Sector_HHI": -1.0,
+        "Top3_Weight": -1.0,
+        "Sector_Weights": {},
+        "Last_Updated": "2026-04-21"
+    },
+    "BBJP": {
+        "Sector_HHI": -1.0,
+        "Top3_Weight": -1.0,
+        "Sector_Weights": {},
+        "Last_Updated": "2026-04-21"
+    },
+    "DGRW": {
+        "Sector_HHI": 0.1416,
+        "Top3_Weight": 0.1815,
+        "Sector_Weights": {
+            "INFORMATION TECHNOLOGY": 0.251004,
+            "INDUSTRIALS": 0.14759,
+            "CONSUMER STAPLES": 0.115462,
+            "FINANCIALS": 0.108434,
+            "HEALTHCARE": 0.101406,
+            "CONSUMER DISCRETIONARY": 0.089357,
+            "COMMUNICATION SERVICES": 0.080321,
+            "ENERGY": 0.080321,
+            "MATERIALS": 0.023092,
+            "UTILITIES": 0.003012
+        },
+        "Last_Updated": "2026-04-21"
+    },
+    "ESGU": {
+        "Sector_HHI": 0.1815,
+        "Top3_Weight": 0.1828,
+        "Sector_Weights": {
+            "INFORMATION TECHNOLOGY": 0.349948,
+            "FINANCIALS": 0.123572,
+            "COMMUNICATION SERVICES": 0.100727,
+            "INDUSTRIALS": 0.100727,
+            "HEALTHCARE": 0.09865,
+            "CONSUMER DISCRETIONARY": 0.093458,
+            "CONSUMER STAPLES": 0.048806,
+            "ENERGY": 0.040498,
+            "UTILITIES": 0.022845,
+            "MATERIALS": 0.020768,
+            "REAL ESTATE": 0.0
+        },
+        "Last_Updated": "2026-04-21"
+    },
+    "AVDE": {
+        "Sector_HHI": -1.0,
+        "Top3_Weight": -1.0,
+        "Sector_Weights": {},
+        "Last_Updated": "2026-04-21"
+    },
+    "IWY": {
+        "Sector_HHI": 0.3343,
+        "Top3_Weight": 0.3737,
+        "Sector_Weights": {
+            "INFORMATION TECHNOLOGY": 0.540161,
+            "COMMUNICATION SERVICES": 0.134538,
+            "CONSUMER DISCRETIONARY": 0.114458,
+            "HEALTHCARE": 0.069277,
+            "FINANCIALS": 0.055221,
+            "INDUSTRIALS": 0.050201,
+            "CONSUMER STAPLES": 0.03012,
+            "MATERIALS": 0.003012,
+            "REAL ESTATE": 0.003012,
+            "UTILITIES": 0.0,
+            "ENERGY": 0.0
+        },
+        "Last_Updated": "2026-04-21"
+    },
+    "SCHV": {
+        "Sector_HHI": 0.1313,
+        "Top3_Weight": 0.08,
+        "Sector_Weights": {
+            "FINANCIALS": 0.208633,
+            "INFORMATION TECHNOLOGY": 0.16444,
+            "INDUSTRIALS": 0.152107,
+            "HEALTHCARE": 0.120247,
+            "CONSUMER STAPLES": 0.088386,
+            "CONSUMER DISCRETIONARY": 0.070915,
+            "ENERGY": 0.070915,
+            "UTILITIES": 0.048304,
+            "REAL ESTATE": 0.04111,
+            "MATERIALS": 0.034943,
+            "COMMUNICATION SERVICES": 0.0
+        },
+        "Last_Updated": "2026-04-21"
+    },
+    "EFG": {
+        "Sector_HHI": -1.0,
+        "Top3_Weight": -1.0,
+        "Sector_Weights": {},
+        "Last_Updated": "2026-04-21"
+    },
+    "VTWO": {
+        "Sector_HHI": 0.1496,
+        "Top3_Weight": 0.0367,
+        "Sector_Weights": {
+            "HEALTHCARE": 0.199546,
+            "INDUSTRIALS": 0.189342,
+            "FINANCIALS": 0.185941,
+            "INFORMATION TECHNOLOGY": 0.151927,
+            "CONSUMER DISCRETIONARY": 0.097506,
+            "ENERGY": 0.048753,
+            "MATERIALS": 0.045351,
+            "UTILITIES": 0.03288,
+            "COMMUNICATION SERVICES": 0.028345,
+            "CONSUMER STAPLES": 0.020408
+        },
+        "Last_Updated": "2026-04-21"
+    },
+    "SPSM": {
+        "Sector_HHI": 0.1395,
+        "Top3_Weight": 0.0174,
+        "Sector_Weights": {
+            "INDUSTRIALS": 0.194384,
+            "FINANCIALS": 0.193305,
+            "CONSUMER DISCRETIONARY": 0.145788,
+            "INFORMATION TECHNOLOGY": 0.138229,
+            "HEALTHCARE": 0.11987,
+            "ENERGY": 0.061555,
+            "MATERIALS": 0.050756,
+            "COMMUNICATION SERVICES": 0.042117,
+            "CONSUMER STAPLES": 0.030238,
+            "UTILITIES": 0.023758,
+            "REAL ESTATE": 0.0
+        },
+        "Last_Updated": "2026-04-21"
+    },
+    "IWS": {
+        "Sector_HHI": 0.1236,
+        "Top3_Weight": 0.0348,
+        "Sector_Weights": {
+            "INDUSTRIALS": 0.191964,
+            "FINANCIALS": 0.169643,
+            "INFORMATION TECHNOLOGY": 0.145089,
+            "ENERGY": 0.087054,
+            "CONSUMER DISCRETIONARY": 0.081473,
+            "UTILITIES": 0.081473,
+            "HEALTHCARE": 0.080357,
+            "MATERIALS": 0.071429,
+            "CONSUMER STAPLES": 0.058036,
+            "COMMUNICATION SERVICES": 0.033482,
+            "REAL ESTATE": 0.0
+        },
+        "Last_Updated": "2026-04-21"
+    },
+    "XLP": {
+        "Sector_HHI": 1.0,
+        "Top3_Weight": 0.2855,
+        "Sector_Weights": {
+            "CONSUMER STAPLES": 1.0,
+            "INFORMATION TECHNOLOGY": 0.0,
+            "COMMUNICATION SERVICES": 0.0,
+            "CONSUMER DISCRETIONARY": 0.0,
+            "HEALTHCARE": 0.0,
+            "INDUSTRIALS": 0.0,
+            "MATERIALS": 0.0,
+            "UTILITIES": 0.0,
+            "ENERGY": 0.0,
+            "FINANCIALS": 0.0,
+            "REAL ESTATE": 0.0
+        },
+        "Last_Updated": "2026-04-21"
+    },
+    "GSLC": {
+        "Sector_HHI": 0.1818,
+        "Top3_Weight": 0.1917,
+        "Sector_Weights": {
+            "INFORMATION TECHNOLOGY": 0.347737,
+            "FINANCIALS": 0.117284,
+            "COMMUNICATION SERVICES": 0.114198,
+            "CONSUMER DISCRETIONARY": 0.110082,
+            "INDUSTRIALS": 0.091564,
+            "HEALTHCARE": 0.090535,
+            "CONSUMER STAPLES": 0.061728,
+            "ENERGY": 0.026749,
+            "UTILITIES": 0.02572,
+            "MATERIALS": 0.014403,
+            "REAL ESTATE": 0.0
+        },
+        "Last_Updated": "2026-04-21"
+    },
+    "SCZ": {
+        "Sector_HHI": -1.0,
+        "Top3_Weight": -1.0,
+        "Sector_Weights": {},
+        "Last_Updated": "2026-04-21"
+    },
+    "DFUV": {
+        "Sector_HHI": 0.1351,
+        "Top3_Weight": 0.1121,
+        "Sector_Weights": {
+            "FINANCIALS": 0.201893,
+            "INDUSTRIALS": 0.15142,
+            "HEALTHCARE": 0.146162,
+            "ENERGY": 0.143007,
+            "INFORMATION TECHNOLOGY": 0.12408,
+            "CONSUMER DISCRETIONARY": 0.069401,
+            "MATERIALS": 0.068349,
+            "COMMUNICATION SERVICES": 0.058885,
+            "CONSUMER STAPLES": 0.035752,
+            "UTILITIES": 0.001052,
+            "REAL ESTATE": 0.0
+        },
+        "Last_Updated": "2026-04-21"
+    },
+    "ITA": {
+        "Sector_HHI": 0.998,
+        "Top3_Weight": 0.4544,
+        "Sector_Weights": {
+            "INDUSTRIALS": 0.998978,
+            "CONSUMER DISCRETIONARY": 0.001022,
+            "INFORMATION TECHNOLOGY": 0.0,
+            "COMMUNICATION SERVICES": 0.0,
+            "HEALTHCARE": 0.0,
+            "CONSUMER STAPLES": 0.0,
+            "MATERIALS": 0.0,
+            "UTILITIES": 0.0,
+            "ENERGY": 0.0,
+            "FINANCIALS": 0.0,
+            "REAL ESTATE": 0.0
+        },
+        "Last_Updated": "2026-04-21"
     }
 }
