@@ -22,8 +22,8 @@ Preference-driven ETF portfolio optimization program
 
 1. Clone 此專案至本地端：
    ```bash
-   git clone [https://github.com/your-username/your-repo-name.git](https://github.com/your-username/your-repo-name.git)
-   cd your-repo-name
+   git clone [https://github.com/JasonRott/FinTech-Project.git](https://github.com/JasonRott/FinTech-Project.git)
+   cd JasonRott
 2. 載入需要的模組與套件
    ```bash
    pip install -r requirements.txt
