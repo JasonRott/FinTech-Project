@@ -29,25 +29,25 @@ Preference-driven ETF portfolio optimization program
    pip install -r requirements.txt
 
 3. 檔案管理:
-   parameters.py 參數設定
-   main.py 主程式架構
-   functions.py 各階段所使用函式彙整，可使用ctrl^f(階段名稱)查詢各階段函式位置
-      階段名稱:
-         stage0_0_get_sorted_ETFsorted
-         stage0_1_ETF_data_input
-         stage0_2_EDA_and_Visualization
-         stage0_3_regularization_and_dimensionality_reduction
-         stage1_DEA_efficiency_calculation
-         stage2_0_AHP_weight_final_candidates_selection
-         stage2_1_preference_driven_deduplication
-         stage3_Preference_Driven_Portfolio_Optimization
-   AHP_weights_setting_script.py 測試權重時使用，輸入預期權重能夠反推出AHP矩陣，再貼上parameters.py中的DETERMINISTIC_USER_INPUTS字典即可
-   Directory:
-      csv: 儲存各階段矩陣與表格
-      json: 
-         etf_database.json: 儲存各ETF產業分布與前三持股占比
-         questionnaire.json: 儲存AHP問卷
-         stage2_ahp_global_weights.json: 儲存使用者偏好權重與該次填答之CR值
-      local_finbert: 儲存本地FinBERT模型，加速計算情緒分數
-      png: 儲存特徵視覺化圖表與最佳化分析結果圖表
-      report: 儲存最佳化偏好投資組合與最佳化夏普值投資組合，與其深度分析
+   - parameters.py 參數設定
+   - main.py 主程式架構
+   - functions.py 各階段所使用函式彙整，可使用ctrl^f(階段名稱)查詢各階段函式位置
+      - 階段名稱:
+         - stage0_0_get_sorted_ETFsorted
+         - stage0_1_ETF_data_input
+         - stage0_2_EDA_and_Visualization
+         - stage0_3_regularization_and_dimensionality_reduction
+         - stage1_DEA_efficiency_calculation
+         - stage2_0_AHP_weight_final_candidates_selection
+         - stage2_1_preference_driven_deduplication
+         - stage3_Preference_Driven_Portfolio_Optimization
+   - AHP_weights_setting_script.py 測試權重時使用，輸入預期權重能夠反推出AHP矩陣，再貼上parameters.py中的DETERMINISTIC_USER_INPUTS字典即可
+   - Directory:
+      - csv: 儲存各階段矩陣與表格
+      - json: 
+         - etf_database.json: 儲存各ETF產業分布與前三持股占比
+         - questionnaire.json: 儲存AHP問卷
+         - stage2_ahp_global_weights.json: 儲存使用者偏好權重與該次填答之CR值
+      - local_finbert: 儲存本地FinBERT模型，加速計算情緒分數
+      - png: 儲存特徵視覺化圖表與最佳化分析結果圖表
+      - report: 儲存最佳化偏好投資組合與最佳化夏普值投資組合，與其深度分析
