@@ -51,17 +51,17 @@ def generate_ahp_inputs(target_main_weights, target_sub_weights):
 # ==========================================
 
 TARGET_MAIN_WEIGHTS = {
-    "Return_Main": 80,    # 報酬佔 30%
-    "Risk_Main": 10,      # 風險佔 40% (極度保守)
-    "Cost_Main": 5,      # 成本佔 10%
-    "Liquidity_Main": 3,  # 流動性佔 5%
-    "Diversity_Main": 2, # 分散度佔 10%
-    "Sentiment_Main": 0   # 情感佔 5%
+    "Return_Main": 35,    # 報酬佔 30%
+    "Risk_Main": 30,      # 風險佔 40% (極度保守)
+    "Cost_Main": 10,      # 成本佔 10%
+    "Liquidity_Main": 10,  # 流動性佔 5%
+    "Diversity_Main": 10, # 分散度佔 10%
+    "Sentiment_Main": 5   # 情感佔 5%
 }
 
 TARGET_SUB_WEIGHTS = {
-    "Return_Main": {"CAGR": 9.9, "Div": 0.1},        # 歷史報酬 70%，殖利率 30%
-    "Risk_Main": {"Vol": 9.9, "MaxDD": 0.1},         # 抗波動 80%，抗回撤 20%
+    "Return_Main": {"CAGR": 8, "Div": 2},        # 歷史報酬 70%，殖利率 30%
+    "Risk_Main": {"Vol": 7, "MaxDD": 3},         # 抗波動 80%，抗回撤 20%
     "Liquidity_Main": {"Volume": 5, "AUM": 5}    # 交易量 50%，資產規模 50%
 }
 
