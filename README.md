@@ -1,20 +1,38 @@
 # FinTech-Project
 Preference-driven ETF portfolio optimization program
-# 偏好驅動之智能 ETF 資產配置系統 
+
+# 偏好驅動之智能 ETF 資產配置系統
 **(Preference-Driven Smart ETF Portfolio Optimization)**
 
-本專案結合**作業研究 (OR)** 理論與金融科技 (FinTech)，旨在打造一套具備「信託責任防線」的客製化機器人理財系統。系統不僅追求傳統的財務效率，更透過量化模型融合投資人的主觀偏好。
+本專案結合**作業研究 (OR)** 理論與金融科技 (FinTech)，旨在打造一套具備「效率篩選、偏好理解、風險防護與數學最佳化」的客製化 ETF 機器人理財系統。系統不僅追求傳統的財務效率，也透過 AHP 或自然語言貝式推論，將投資人的主觀偏好轉換為可計算的投資組合效用函數。
 
 ## 🌟 核心系統架構 (System Pipeline)
 
-本系統分為四個核心運算階段：
-1. **Stage 0 - 數據獲取與 NLP 情緒萃取 (Data ETL & FinBERT):** - 串接 YahooQuery、Alpha Vantage、Finnhub API 獲取財務基本面與產業分散度。
-   - 部署本地端 FinBERT 模型，將 180 天歷史財經新聞標題轉換為「時間衰減加權」的宏觀情緒分數。
-2. **Stage 1 - DEA 效率前緣過濾 (Data Envelopment Analysis):** - 以風險與成本為 Input，報酬、流動性與分散度為 Output，剔除相對無效率的 ETF 標的，確保進入決策池的資產具備紮實的財務體質。
-3. **Stage 2 - AHP 偏好量化 (Analytic Hierarchy Process):** - 透過層級分析問卷，將使用者的模糊主觀偏好，轉化為 9 大維度的數學權重矩陣。
-   - 將相關性高於0.99的ETF分群，依照使用者偏好(來自AHP權重)保留各分群中最優者。
-4. **Stage 3 - 具備邊界防護的二次規劃 (Quadratic Programming with Fiduciary Bounds):** - 將 $\alpha$ 信託底線權重與使用者權重融合，防止極端偏好。
-   - 使用 `scipy.optimize` 進行二次規劃，並透過單一標的 40% 上限與真實 HHI 產業矩陣，確保最終投資組合的結構安全性。
+本系統目前分為五個主要階段：
+
+1. **Stage 0 - 市場資料擷取與特徵處理 (Market Data Preparation):**
+   - 串接 YahooQuery、Alpha Vantage、Finnhub 等資料來源，取得 ETF 財務特徵、歷史價格、產業分散度與新聞資料。
+   - 使用本地端 FinBERT 模型，將財經新聞轉換為時間衰減加權的情緒分數。
+   - 進行 EDA、特徵合併、AUM 校正、DEA 前置正規化與客觀降維。
+
+2. **Stage 1 - DEA 效率篩選 (DEA Screening):**
+   - 以風險與成本作為 Input，報酬、流動性、分散度與情緒分數作為 Output。
+   - 執行標準 DEA、超級效率 DEA 與交互效率 DEA，剔除相對無效率標的。
+   - 產出具備財務效率與競爭力的 ETF 候選池。
+
+3. **Stage 2_1 - 使用者偏好提取 (Preference Extraction):**
+   - **Stage 2_1-A Static AHP:** 保留原本的靜態 AHP 問卷，將使用者偏好轉成 9 維 Global Weights，作為 baseline 與傳統方法對照組。
+   - **Stage 2_1-B Active Bayesian:** 新增自然語言偏好探測流程，透過動態提問、語意萃取與階層式貝式信念更新，估計使用者偏好的 $\mu$ 與 $\sigma$。
+   - 兩種方法最後都輸出至 `json/stage2_ahp_global_weights.json`，讓後續流程維持同一個介面。
+
+4. **Stage 2_2 - 高相關 ETF 分群與偏好篩選 (Preference Cluster Selection):**
+   - 將相關性過高的 ETF 分群，避免最終投資組合塞入高度重複的標的。
+   - 依照使用者偏好分數，保留每個群集中最符合偏好的 ETF。
+
+5. **Stage 3 - 偏好投資組合最佳化 (Preference Portfolio Optimization):**
+   - 將使用者偏好權重放入效用函數，使用 `scipy.optimize` 的 SLSQP 求解偏好驅動投資組合。
+   - 加入單一 ETF 權重上限、產業 HHI 分散度與風險尺度映射等防護機制。
+   - 與傳統 Max Sharpe 投資組合比較，輸出權重、深度分析報告、MPT 效率前緣與多維度雷達圖。
 
 ## 🛠️ 安裝與環境設定 (Installation)
 
@@ -22,32 +40,89 @@ Preference-driven ETF portfolio optimization program
 
 1. Clone 此專案至本地端：
    ```bash
-   git clone [https://github.com/JasonRott/FinTech-Project.git](https://github.com/JasonRott/FinTech-Project.git)
+   git clone https://github.com/JasonRott/FinTech-Project.git
    cd FinTech-Project
-2. 載入需要的模組與套件
+   ```
+
+2. 載入需要的模組與套件：
    ```bash
    pip install -r requirements.txt
+   ```
 
-3. 檔案管理:
-   - parameters.py 參數設定
-   - main.py 主程式架構
-   - functions.py 各階段所使用函式彙整，可使用ctrl^f(階段名稱)查詢各階段函式位置
-      - 階段名稱:
-         - stage0_0_get_sorted_ETFsorted
-         - stage0_1_ETF_data_input
-         - stage0_2_EDA_and_Visualization
-         - stage0_3_regularization_and_dimensionality_reduction
-         - stage1_DEA_efficiency_calculation
-         - stage2_0_AHP_weight_final_candidates_selection
-         - stage2_1_preference_driven_deduplication
-         - stage3_Preference_Driven_Portfolio_Optimization
-   - AHP_weights_setting_script.py 測試權重時使用，輸入預期權重能夠反推出AHP矩陣，再貼上parameters.py中的DETERMINISTIC_USER_INPUTS字典即可
-   - Directory:
-      - csv: 儲存各階段矩陣與表格
-      - json: 
-         - etf_database.json: 儲存各ETF產業分布與前三持股占比
-         - questionnaire.json: 儲存AHP問卷
-         - stage2_ahp_global_weights.json: 儲存使用者偏好權重與該次填答之CR值
-      - local_finbert: 儲存本地FinBERT模型，加速計算情緒分數
-      - png: 儲存特徵視覺化圖表與最佳化分析結果圖表
-      - report: 儲存最佳化偏好投資組合與最佳化夏普值投資組合，與其深度分析
+3. 若要使用 Gemini / Active Bayesian 相關功能，可另外安裝：
+   ```bash
+   pip install google-generativeai
+   ```
+
+## 🚀 執行方式 (Usage)
+
+主程式入口為：
+
+```bash
+python main.py
+```
+
+在 `main.py` 中可以切換使用者偏好提取模式：
+
+```python
+preference_mode="static_ahp"
+```
+
+或：
+
+```python
+preference_mode="active_bayesian"
+```
+
+也可以透過 `PipelineConfig` 選擇只執行部分階段，例如只跑 Stage 2_1：
+
+```python
+from pipeline_stages import PipelineConfig, run_full_pipeline
+
+run_full_pipeline(
+    PipelineConfig(
+        run_stage0_fetch=False,
+        run_stage0_feature_processing=False,
+        run_stage1_dea=False,
+        run_stage2_1_preference=True,
+        run_stage2_2_cluster_selection=False,
+        run_stage3_optimization=False,
+        preference_mode="active_bayesian",
+    )
+)
+```
+
+## 📁 檔案管理 (Project Files)
+
+- `main.py`：主程式入口，負責設定 pipeline 參數與執行階段。
+- `pipeline_stages.py`：統一管理 Stage 0、1、2_1、2_2、3 的流程入口，並在每個主階段開始與結束時輸出提示文字。
+- `functions.py`：各階段核心函式彙整，包含資料擷取、DEA、AHP、分群篩選、最佳化求解器與視覺化分析。
+- `parameters.py`：全域參數設定，例如 API key、ETF 數量、單一標的權重上限、AHP deterministic inputs。
+- `active_preference/`：自然語言偏好探測、Gemini 訪談、合成訓練資料、特徵編碼與 BNN 相關模組。
+- `AHP_weights_setting_script.py`：測試 AHP 權重時使用，可由預期權重反推 AHP 成對比較矩陣。
+- `ARCHITECTURE.md`：更詳細的架構說明與各 stage 對應函式。
+
+## 📂 目錄說明 (Directories)
+
+- `csv/`：儲存各階段矩陣與表格，例如 ETF universe、DEA 結果、最終候選池與正規化特徵矩陣。
+- `json/`：儲存 ETF database、AHP 問卷、使用者偏好權重、Active Bayesian 狀態。
+- `local_finbert/`：儲存本地 FinBERT 模型，加速新聞情緒分數計算。
+- `png/`：儲存 EDA、DEA、MPT、投資組合績效與雷達圖等視覺化結果。
+- `report/`：儲存最終偏好投資組合與 Max Sharpe 投資組合的權重表與深度分析報告。
+
+## 🔎 主要輸出 (Outputs)
+
+- `csv/stage0_final_matrix.csv`：ETF 多維度原始特徵矩陣。
+- `csv/stage0_dea_ready_matrix.csv`：DEA 前置正規化矩陣。
+- `csv/stage1_final_candidates.csv`：DEA 交互效率篩選後的候選 ETF。
+- `json/stage2_ahp_global_weights.json`：使用者偏好權重，無論來源是 AHP 或 Active Bayesian 都會輸出到此介面。
+- `csv/stage2_final_user_universe.csv`：經高相關分群與偏好篩選後的最終 ETF universe。
+- `report/*_summary.txt`、`report/*_weights.csv`、`report/*_analytics.csv`：最終投資組合分析報告。
+- `png/*_portfolio_performance.png`、`png/*_mpt_efficient_frontier.png`、`png/*_radar_chart.png`：投資組合視覺化結果。
+
+## 📌 設計取捨 (Design Notes)
+
+- AHP 仍保留為 baseline、靜態問卷與傳統方法對照組。
+- Active Bayesian 是後續主研究方向，可處理自然語言回答、偏好不確定性與動態提問。
+- Stage 3 不直接依賴偏好來源，只讀取 `json/stage2_ahp_global_weights.json`，確保求解器介面穩定。
+- 若 Alpha Vantage 觸發每日 API 限制，系統仍會使用本地 `json/etf_database.json` 既有資料繼續後續流程。
