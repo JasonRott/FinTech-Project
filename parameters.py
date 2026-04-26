@@ -6,6 +6,7 @@ YQ_OUTPUT_FILE = "csv\\stage0_yq_features.csv" # YQ 財務特徵的輸出檔案
 AV_DB_FILE = "json\\etf_database.json"         # AV 分散度特徵的本地資料庫
 AV_API_KEY = "TY6TXNC6W7D2YT9N"          # Alpha Vantage API Key TY6TXNC6W7D2YT9N 
 AV_MAX_CALLS_PER_DAY = 25                # AV 每日安全呼叫上限
+GEMINI_API_KEY = "AIzaSyC1oULTtIEPVAI21Q8MuebxB36o0S5K8v8"
 TOP_N_ETFS = 500                         # 我們要送入 DEA 模型的候選數量
 FINNHUB_API_KEY = "d7g00o9r01qqb8rhrkvgd7g00o9r01qqb8rhrl00"  # 請填入你的 Finnhub API Key
 OUTPUT_FILE = "csv\\stage0_final_matrix.csv" # 最終多維度特徵矩陣的輸出檔案
@@ -24,7 +25,7 @@ BASELINE_WEIGHTS = { # 專家先驗權重矩陣 (總和必須為 1.0)
 }
 MAX_WEIGHT_LIMIT = 0.40 # 單一標的最大權重限制 (40%)
 CASE_NAME = "Neutral_user" # 預設情境名稱
-VERBOSE = False # 是否輸出詳細的運算過程訊息 True (Verbose 模式) -> 顯示普通資訊與除錯訊息，False (Silence 模式) -> 只顯示警告與錯誤
+VERBOSE = True # 是否輸出詳細的運算過程訊息 True (Verbose 模式) -> 顯示普通資訊與除錯訊息，False (Silence 模式) -> 只顯示警告與錯誤
 DETERMINISTIC_AHP_WEIGHTS = True # 這裡可以切換是否使用確定性模擬結果, 若想讓教授體驗互動問卷，可以改成 DETERMINISTIC_AHP_WEIGHTS=False
 
 # AHP 尺度提醒：
@@ -34,8 +35,8 @@ DETERMINISTIC_AHP_WEIGHTS = True # 這裡可以切換是否使用確定性模擬
 # 7.0 = 前者強烈重要 | 1/7 = 後者強烈重要
 # 9.0 = 前者極端重要 | 1/9 = 後者極端重要
 DETERMINISTIC_USER_INPUTS = {
-    "Main": [0.75, 3.0, 6.0, 3.0, 6.0, 4.0, 8.0, 4.0, 8.0, 2.0, 1.0, 2.0, 0.5, 1.0, 2.0],
-    "Sub": {'Return_Main': [2.3333], 'Risk_Main': [4.0], 'Liquidity_Main': [1.0]}
+    "Main": [1.1667, 3.5, 3.5, 3.5, 7.0, 3.0, 3.0, 3.0, 6.0, 1.0, 1.0, 2.0, 1.0, 2.0, 2.0],
+    "Sub": {'Return_Main': [4.0], 'Risk_Main': [2.3333], 'Liquidity_Main': [1.0]}
 }
 '''
 DETERMINISTIC_USER_INPUTS = {
