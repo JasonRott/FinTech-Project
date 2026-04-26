@@ -143,6 +143,34 @@ def get_or_fetch_historical_prices(tickers, max_retries=3):
     final_price_matrix = db_df[available_tickers].dropna(how='all')
     
     return final_price_matrix
+
+def prepare_aligned_returns(price_matrix, tickers, min_history=126):
+    """
+    Build a leakage-free return panel by using only overlapping history.
+    This avoids backward-filling future data into earlier missing periods.
+    """
+    available_tickers = [ticker for ticker in tickers if ticker in price_matrix.columns]
+    if not available_tickers:
+        return pd.DataFrame()
+
+    aligned_prices = price_matrix[available_tickers].sort_index().ffill()
+    returns_matrix = aligned_prices.pct_change(fill_method=None).dropna(axis=1, how='all')
+
+    if returns_matrix.empty:
+        return pd.DataFrame()
+
+    first_valid_dates = [returns_matrix[col].first_valid_index() for col in returns_matrix.columns]
+    first_valid_dates = [dt for dt in first_valid_dates if dt is not None]
+    if not first_valid_dates:
+        return pd.DataFrame()
+
+    common_start = max(first_valid_dates)
+    returns_matrix = returns_matrix.loc[common_start:].dropna(how='any')
+
+    if min_history and len(returns_matrix) < min_history:
+        log.warning(f"?? 重疊報酬樣本偏短，目前只有 {len(returns_matrix)} 筆日資料。")
+
+    return returns_matrix
 # ==========================================
 # stage0_0_get_sorted_ETFsorted
 # ==========================================
@@ -496,6 +524,12 @@ def build_etf_database_av(target_tickers, AV_DB_FILE=parameters.AV_DB_FILE, AV_A
                 
             else:
                 log.warning(f"⚠️ 找不到 {symbol} 的結構資料 (可能非 ETF 或 API 缺漏)。")
+                db[symbol] = {
+                        "Sector_HHI": -1.0,
+                        "Top3_Weight": -1.0,
+                        "Sector_Weights": {},  # 無效資料不儲存產業分佈
+                        "Last_Updated": time.strftime("%Y-%m-%d")
+                }
             
             calls_today += 1
             time.sleep(1)  # 防呆休眠
@@ -831,7 +865,7 @@ def patch_aum_from_csv(MATRIX_FILE=parameters.OUTPUT_FILE, UNIVERSE_FILE=paramet
 # stage0_2_EDA_and_Visualization
 # ==========================================
 def run_stage0_2_eda():
-    log.info("啟動 Stage 0.5: 探索性資料分析 (EDA) 視覺化...")
+    log.info("啟動 Stage 0: 探索性資料分析 (EDA) 視覺化...")
     
     # 1. 讀取 Stage 0 產出的原始資料
     try:
@@ -1007,7 +1041,14 @@ def run_stage1_normalized_dea():
         return
     # 2. 資料清洗：實作「分層 DEA」，先濾除含有 NaN 的非股票型資產
     # 確保送入 linprog 的矩陣是完美的實數
-    df = df_raw.dropna(subset=['Out_Diversity']).reset_index(drop=True)
+    input_cols = ['In_Risk', 'In_Cost']
+    output_cols = ['Out_Return', 'Out_Liquidity', 'Out_Diversity']
+    dea_required_cols = input_cols + output_cols
+    invalid_mask = df_raw[dea_required_cols].isna().any(axis=1)
+    dropped_count = int(invalid_mask.sum())
+    if dropped_count > 0:
+        log.warning(f"?? Stage 1 DEA 排除 {dropped_count} 檔ETF，原因是 DEA 必要欄位含 NaN。")
+    df = df_raw.loc[~invalid_mask].reset_index(drop=True)
     log.info(f"📊 載入資料：共 {len(df)} 檔 ETF 進入正規化 DEA 運算。")
 
     # 3. 定義投入 (Inputs) 與 產出 (Outputs) 欄位
@@ -1131,12 +1172,16 @@ def run_stage1_super_efficiency_normalized():
         log.error("❌ 找不到 stage0_dea_ready_matrix.csv，請先執行前段正規化。")
         sys.exit(1)
         return
-    df = df_raw.dropna(subset=['Out_Diversity']).reset_index(drop=True)
+    input_cols = ['In_Risk', 'In_Cost']
+    output_cols = ['Out_Return', 'Out_Liquidity', 'Out_Diversity']
+    dea_required_cols = input_cols + output_cols
+    invalid_mask = df_raw[dea_required_cols].isna().any(axis=1)
+    dropped_count = int(invalid_mask.sum())
+    if dropped_count > 0:
+        log.warning(f"?? Super-Efficiency DEA 排除 {dropped_count} 檔ETF，原因是 DEA 必要欄位含 NaN。")
+    df = df_raw.loc[~invalid_mask].reset_index(drop=True)
 
     # 2. 對齊 6 大維度
-    input_cols = ['In_Risk', 'In_Cost']
-    output_cols = ['Out_Return', 'Out_Liquidity', 'Out_Diversity', 'Out_Sentiment']
-
     X = df[input_cols].values
     Y = df[output_cols].values
 
@@ -1367,7 +1412,7 @@ class TwoLevel_AHP_Model:
                 
             # 如果有多個子特徵，需要求解次矩陣
             sub_comparisons = user_inputs["Sub"].get(main_crit, [])
-            local_weights, sub_cr = self._solve_matrix(sub_comparisons, len(subs))
+            local_weights, _ = self._solve_matrix(sub_comparisons, len(subs))
             
             for i, sub_name in enumerate(subs):
                 global_w = main_w * local_weights[i]
@@ -1461,7 +1506,7 @@ def robust_scale(series, upper_quantile=0.95, lower_quantile=0.01, is_reverse=Fa
     return scaled
 
 def run_stage2_5_preference_deduplication_yq():
-    log.info("啟動 Stage 2.5: 偏好驅動去重與分群 (白名單過濾與原始數據重構)...")
+    log.info("啟動 Stage 2_2: 高相關 ETF 分群與偏好篩選 (白名單過濾與原始數據重構)...")
     
     # 1. 讀取 Stage 2 的兩層級 9 維全局權重
     try:
@@ -1528,14 +1573,12 @@ def run_stage2_5_preference_deduplication_yq():
 
     # 5. 下載歷史價格進行相關性計算
     price_matrix = get_or_fetch_historical_prices(valid_tickers)
-    returns_matrix = price_matrix.pct_change(fill_method=None).dropna(how='all')
+    returns_matrix = prepare_aligned_returns(price_matrix, valid_tickers)
     # 🚨 修正：先向下填補(處理中間斷層)，再向上填補(處理頭部缺漏)
-    returns_matrix = returns_matrix.ffill().bfill()
     # 最後才使用 dropna(axis=1) 把那些「即使雙向填補後依然全是 NaN」的無效標的給剔除
-    returns_matrix = returns_matrix.dropna(axis=1)
     
     # 對齊成功抓到價格的 ETF
-    final_tickers = [t for t in valid_tickers if t in returns_matrix.columns]
+    final_tickers = returns_matrix.columns.tolist()
     df = df[df['ETF'].isin(final_tickers)].reset_index(drop=True)
     corr_matrix = returns_matrix[final_tickers].corr()
     
@@ -1559,7 +1602,7 @@ def run_stage2_5_preference_deduplication_yq():
             
     # 7. 挑選偏好分數最高代表
     final_portfolio_candidates = []
-    log.info("\n=== 🎯 Stage 2.5 群集去重結果 ===")
+    log.info("\n=== 🎯 Stage 2_2 分群篩選結果 ===")
     for i, cluster in enumerate(clusters):
         cluster_df = df[df['ETF'].isin(cluster)]
         best_etf = cluster_df.loc[cluster_df['User_Pref_Score'].idxmax()]
@@ -1591,6 +1634,8 @@ USE_TRUE_HHI_OPTIMIZATION = parameters.USE_TRUE_HHI_OPTIMIZATION
 # ==========================================
 # 系統信託底線的佔比 (0.0 = 完全聽從使用者, 1.0 = 完全使用系統底線, 0.5 = 各半)
 ALPHA_BASELINE = parameters.ALPHA_BASELINE 
+VOL_SCORE_FLOOR = 0.08
+VOL_SCORE_CAP = 0.30
 
 # 專家先驗權重矩陣 (總和必須為 1.0)
 BASELINE_WEIGHTS = parameters.BASELINE_WEIGHTS
@@ -1612,11 +1657,24 @@ def build_sector_matrix(etf_list, db_file):
     with open(db_file, 'r', encoding='utf-8') as f:
         db = json.load(f)
 
+    asset_class_lookup = {}
+    if os.path.exists(parameters.CSV_UNIVERSE_FILE):
+        try:
+            universe_df = pd.read_csv(parameters.CSV_UNIVERSE_FILE, usecols=['ticker', 'asset_class'])
+            asset_class_lookup = dict(zip(universe_df['ticker'], universe_df['asset_class']))
+        except Exception:
+            asset_class_lookup = {}
+
     # 1. 找出所有獨特的產業，建立產業字典 (Columns)
     all_sectors = set()
     for ticker in etf_list:
-        if ticker in db and "Sector_Weights" in db[ticker]:
-            all_sectors.update(db[ticker]["Sector_Weights"].keys())
+        entry = db.get(ticker, {})
+        sector_weights = entry.get("Sector_Weights") if isinstance(entry, dict) else None
+        if isinstance(sector_weights, dict) and sector_weights:
+            all_sectors.update(sector_weights.keys())
+        else:
+            asset_class = asset_class_lookup.get(ticker, "Unclassified")
+            all_sectors.add(f"ASSET_CLASS::{asset_class}")
 
     sector_list = list(all_sectors)
     K = len(sector_list)
@@ -1627,15 +1685,19 @@ def build_sector_matrix(etf_list, db_file):
 
     # 2. 填入 N x K 權重矩陣
     S_matrix = np.zeros((N, K))
+    sector_index = {sector: idx for idx, sector in enumerate(sector_list)}
     for i, ticker in enumerate(etf_list):
-        if ticker in db and "Sector_Weights" in db[ticker]:
-            weights = db[ticker]["Sector_Weights"]
-            for j, sector in enumerate(sector_list):
-                S_matrix[i, j] = weights.get(sector, 0.0)
+        entry = db.get(ticker, {})
+        sector_weights = entry.get("Sector_Weights") if isinstance(entry, dict) else None
+        if isinstance(sector_weights, dict) and sector_weights:
+            for sector, weight in sector_weights.items():
+                if sector in sector_index:
+                    S_matrix[i, sector_index[sector]] = weight
         else:
             # 防呆機制：若缺失該檔 ETF 的產業資料，強制將其視為 100% 未知產業
             # 在最佳化時會對其施加最嚴厲的集中度懲罰
-            pass 
+            fallback_bucket = f"ASSET_CLASS::{asset_class_lookup.get(ticker, 'Unclassified')}"
+            S_matrix[i, sector_index[fallback_bucket]] = 1.0
 
     log.info(f"📊 成功建立真實產業矩陣 (維度: {N} 檔 ETF x {K} 個產業)")
     return S_matrix, sector_list
@@ -1852,11 +1914,11 @@ def plot_portfolio_analytics_and_mpt(returns_matrix, optimal_weights, max_sharpe
     plt.close()
     log.info(f"✅ 產出圖表：png\\{case}_Mathematical Efficient Frontier.png")
 
-def plot_preference_radar_chart(optimal_weights, max_sharpe_weights, vectors_dict, blended_weights, pref_metrics, ms_metrics, cov_matrix, tickers, max_weight_limit=parameters.MAX_WEIGHT_LIMIT):
+def plot_preference_radar_chart(optimal_weights, max_sharpe_weights, vectors_dict, blended_weights, pref_metrics, ms_metrics, cov_matrix, tickers, max_weight_limit=parameters.MAX_WEIGHT_LIMIT, radar_score_bounds=None):
     """
     繪製 9 維度效用雷達圖，整合正規化效用圖形與真實物理數據，並自動突顯高權重維度。
     針對「抗回撤」採用真實投資組合的非線性風險數據進行雷達圖映射。
-    內部即時計算「理論最低/最高真實波動率」，讓波動率效用 100% 貼合物理極限。
+    波動率使用固定尺度映射，避免每次因候選 ETF universe 改變而造成視覺尺度不穩定。
     """
     log.info("\n啟動視覺化模組：繪製帶有真實數據的多維度效用雷達圖...")
     
@@ -1868,43 +1930,71 @@ def plot_preference_radar_chart(optimal_weights, max_sharpe_weights, vectors_dic
     N = len(categories)
     
     # ==========================================
-    # 🚨 動態計算：尋找真實波動率的物理邊界 (GMV)
+    # 固定尺度映射：波動率使用預先設定的合理區間，不再重新求 GMV 邊界
     # ==========================================
-    log.info("⏳ 計算真實波動率的物理極限，以進行雷達圖動態映射...")
-    def calc_true_vol(w):
-        return np.sqrt(np.dot(w.T, np.dot(cov_matrix, w)))
-
-    bounds_ef = tuple((0.0, max_weight_limit) for _ in range(len(tickers)))
-    initial_w = np.array([1.0 / len(tickers)] * len(tickers))
-    cons_sum = {'type': 'eq', 'fun': lambda w: np.sum(w) - 1.0}
-
-    # 理論最低波動率 (效用 1.0 的基準)
-    res_gmv = minimize(calc_true_vol, initial_w, method='SLSQP', bounds=bounds_ef, constraints=[cons_sum])
-    min_true_vol = calc_true_vol(res_gmv.x) * 100  # 直接轉為 %
-
-    # 理論最高波動率 (效用 0.0 的基準)
-    res_max_vol = minimize(lambda w: -calc_true_vol(w), initial_w, method='SLSQP', bounds=bounds_ef, constraints=[cons_sum])
-    max_true_vol = calc_true_vol(res_max_vol.x) * 100  # 直接轉為 %
-
-    log.info(f"   [動態邊界] 最低波動率(1.0): {min_true_vol:.2f}%, 最高波動率(0.0): {max_true_vol:.2f}%")
+    log.info(f"   [雷達圖尺度] 波動率分數固定映射區間: {VOL_SCORE_FLOOR*100:.1f}% ~ {VOL_SCORE_CAP*100:.1f}%")
 
     # ==========================================
     # 核心修改：動態分配各維度的真實效用分數
     # ==========================================
     pref_scores = []
     ms_scores = []
+
+    radar_score_bounds = radar_score_bounds or {}
+
+    def bounded_score(value, lower_bound, upper_bound):
+        """Map a real metric to 0-1 using fixed or theoretically feasible bounds."""
+        if pd.isna(value) or pd.isna(lower_bound) or pd.isna(upper_bound):
+            return 0.5
+        if upper_bound <= lower_bound:
+            return 0.5
+        return float(np.clip((value - lower_bound) / (upper_bound - lower_bound), 0.0, 1.0))
+
+    def relative_pair_score(pref_value, ms_value, higher_is_better=True, low=0.4, high=0.9):
+        """Map two portfolio-level real metrics to radar scores with correct direction."""
+        if pd.isna(pref_value) or pd.isna(ms_value):
+            return 0.5, 0.5
+        if np.isclose(pref_value, ms_value, rtol=1e-6, atol=1e-9):
+            return 0.65, 0.65
+
+        pref_wins = pref_value > ms_value if higher_is_better else pref_value < ms_value
+        return (high, low) if pref_wins else (low, high)
     
     for cat in categories:
-        if cat == "Risk_Vol" and "Volatility" in pref_metrics:
-            # 1. 波動率：使用剛剛算出的真實邊界進行動態映射
+        if cat == "Return_CAGR" and "CAGR" in pref_metrics:
+            # 歷史報酬使用連續效用映射：
+            # 無風險利率 = 0 分，單一 ETF 權重限制下可達的理論最高 CAGR = 1 分。
+            lower_bound, upper_bound = radar_score_bounds.get("Return_CAGR", (4.0, 20.0))
+            p_score = bounded_score(pref_metrics["CAGR"], lower_bound, upper_bound)
+            m_score = bounded_score(ms_metrics["CAGR"], lower_bound, upper_bound)
+            pref_scores.append(p_score)
+            ms_scores.append(m_score)
+
+        elif cat == "Return_Div" and "Div_Yield" in pref_metrics:
+            # 殖利率軸使用「真實投資組合殖利率」做相對映射。
+            p_score, m_score = relative_pair_score(
+                pref_metrics["Div_Yield"],
+                ms_metrics["Div_Yield"],
+                higher_is_better=True,
+            )
+            pref_scores.append(p_score)
+            ms_scores.append(m_score)
+
+        elif cat == "Risk_Vol" and "Volatility" in pref_metrics:
+            # 1. 波動率：使用固定尺度映射，低波動者分數較高
             p_vol = pref_metrics["Volatility"]
             m_vol = ms_metrics["Volatility"]
             
-            if max_true_vol > min_true_vol:
-                p_score = np.clip(1.0 - (p_vol - min_true_vol) / (max_true_vol - min_true_vol), 0.0, 1.0)
-                m_score = np.clip(1.0 - (m_vol - min_true_vol) / (max_true_vol - min_true_vol), 0.0, 1.0)
-            else:
-                p_score, m_score = 1.0, 1.0
+            p_score = np.clip(
+                1.0 - ((p_vol / 100.0 - VOL_SCORE_FLOOR) / (VOL_SCORE_CAP - VOL_SCORE_FLOOR)),
+                0.0,
+                1.0
+            )
+            m_score = np.clip(
+                1.0 - ((m_vol / 100.0 - VOL_SCORE_FLOOR) / (VOL_SCORE_CAP - VOL_SCORE_FLOOR)),
+                0.0,
+                1.0
+            )
                 
             pref_scores.append(p_score)
             ms_scores.append(m_score)
@@ -2017,7 +2107,7 @@ def plot_preference_radar_chart(optimal_weights, max_sharpe_weights, vectors_dic
     ax.plot(angles, pref_scores, color='red', linewidth=3, label='偏好驅動組合 (紅色涵蓋面積代表效用贏得的優勢)')
     ax.fill(angles, pref_scores, color='red', alpha=0.3)
     
-    plt.title('多維度投資組合決策剖析 (動態波動率極限映射)', size=22, fontweight='bold', y=1.15)
+    plt.title('多維度投資組合決策分析 (固定尺度映射)', size=22, fontweight='bold', y=1.15)
     plt.legend(loc='upper right', bbox_to_anchor=(1.3, 1.1), frameon=True, shadow=True)
     
     output_path = f"png\\{case}_radar_chart.png"
@@ -2027,7 +2117,7 @@ def plot_preference_radar_chart(optimal_weights, max_sharpe_weights, vectors_dic
     log.info(f"✅ 產出圖表：{output_path}")
 
 def run_stage3_pipeline():
-    log.info("啟動 Stage 3: 偏好驅動二次規劃與投資組合深度分析...")
+    log.info("啟動 Stage 3: 偏好驅動投資組合最佳化與深度分析...")
     AV_DB_FILE = parameters.AV_DB_FILE
     try:
         df_stage2 = pd.read_csv("csv\\stage2_final_user_universe.csv")
@@ -2046,14 +2136,12 @@ def run_stage3_pipeline():
     # 抓取歷史價格並對齊資料
     log.info(f"⏳ 載入 {len(tickers)} 檔 ETF 進行最佳化與歷史回測...")
     price_matrix = get_or_fetch_historical_prices(tickers)
-    returns_matrix = price_matrix.pct_change(fill_method=None).dropna(how='all')
+    returns_matrix = prepare_aligned_returns(price_matrix, tickers)
     # 🚨 修正：先向下填補(處理中間斷層)，再向上填補(處理頭部缺漏)
-    returns_matrix = returns_matrix.ffill().bfill()
     # 最後才使用 dropna(axis=1) 把那些「即使雙向填補後依然全是 NaN」的無效標的給剔除
-    returns_matrix = returns_matrix.dropna(axis=1)
     
     # 對齊有效 Tickers
-    valid_tickers = [t for t in tickers if t in returns_matrix.columns]
+    valid_tickers = returns_matrix.columns.tolist()
     returns_matrix = returns_matrix[valid_tickers]
     n_assets = len(valid_tickers)
     
@@ -2105,8 +2193,7 @@ def run_stage3_pipeline():
     vec_sent = df_scaled_valid['Norm_FinBERT'].values
 
     # 共變異數矩陣動態正規化 (V_p = w^T * Sigma * w)
-    cov_matrix_np = returns_matrix.cov().values * 252
-    cov_matrix_norm = cov_matrix_np / np.max(cov_matrix_np)
+    cov_matrix_annual = returns_matrix.cov().values * 252
     
     # ==========================================
     # 核心：定義全局效用函數 U(P)
@@ -2134,14 +2221,19 @@ def run_stage3_pipeline():
             # 舊演算法：線性加權的代理指標
             port_div_score = np.dot(w, vec_div_score)
         port_sent = np.dot(w, vec_sent)
-        
-        port_vol_var = np.dot(w.T, np.dot(cov_matrix_norm, w))
+        port_vol = np.sqrt(np.dot(w.T, np.dot(cov_matrix_annual, w)))
+        port_vol_penalty = np.clip(
+            (port_vol - VOL_SCORE_FLOOR) / (VOL_SCORE_CAP - VOL_SCORE_FLOOR),
+            0.0,
+            1.0
+        )
+        port_vol_score = 1.0 - port_vol_penalty
         
         U = (w_cagr * port_cagr) + (w_div * port_div) \
             + (w_liq_vol * port_liq_vol) + (w_liq_aum * port_liq_aum) \
             + (w_div_score * port_div_score) + (w_sent * port_sent) \
             + (w_maxdd * port_maxdd) + (w_cost * port_cost) \
-            - (w_vol_risk * port_vol_var)
+            + (w_vol_risk * port_vol_score)
         return U
 
     def objective_function(w):
@@ -2164,7 +2256,6 @@ def run_stage3_pipeline():
 
     # ... 執行傳統 Max Sharpe 最佳化 ...
     annual_returns_array = returns_matrix.mean().values * 252
-    cov_matrix_annual = returns_matrix.cov().values * 252
 
     def neg_sharpe_objective(w):
         p_ret = np.dot(w, annual_returns_array)
@@ -2246,7 +2337,7 @@ def run_stage3_pipeline():
     vectors_dict = {
         "Return_CAGR": vec_cagr,
         "Return_Div": vec_div,
-        "Risk_Vol": 1.0 - (np.diag(cov_matrix_norm) / np.max(np.diag(cov_matrix_norm))), # 簡化風險代理
+        "Risk_Vol": df_scaled_valid['Norm_Risk_Vol'].values,
         "Risk_MaxDD": vec_maxdd,
         "Cost_ExpRatio": vec_cost,
         "Liq_Volume": vec_liq_vol,
@@ -2254,6 +2345,34 @@ def run_stage3_pipeline():
         "Div_Score": vec_div_score,
         "FinBERT_score": vec_sent
     }
+
+    def capped_weighted_max_metric(values, max_weight):
+        """Maximum weighted average metric under long-only sum-to-one and per-asset cap."""
+        clean_values = np.array(pd.Series(values).fillna(0.0).values, dtype=float)
+        sorted_values = np.sort(clean_values)[::-1]
+        remaining_weight = 1.0
+        total = 0.0
+
+        for value in sorted_values:
+            if remaining_weight <= 1e-12:
+                break
+            allocation = min(max_weight, remaining_weight)
+            total += allocation * value
+            remaining_weight -= allocation
+
+        return total
+
+    return_cagr_upper_bound = capped_weighted_max_metric(
+        df_merged_valid['Return_CAGR (%)'],
+        parameters.MAX_WEIGHT_LIMIT,
+    )
+    radar_score_bounds = {
+        "Return_CAGR": (4.0, return_cagr_upper_bound)
+    }
+    log.info(
+        f"   [雷達圖尺度] 歷史報酬映射區間: 4.00% ~ {return_cagr_upper_bound:.2f}% "
+        f"(單一 ETF 上限 {parameters.MAX_WEIGHT_LIMIT*100:.0f}%)"
+    )
     # 注意：風險波動率 (Risk_Vol) 在你的二次規劃中是矩陣運算，
     # 為了雷達圖展示單一維度表現，這裡提取對角線(資產本身的波動率)做反向正規化作為視覺代理。
     
@@ -2264,8 +2383,9 @@ def run_stage3_pipeline():
         blended_weights, 
         pref_metrics,  # 傳入偏好組合的真實數據
         ms_metrics,    # 傳入夏普組合的真實數據
-        cov_matrix_np,
-        valid_tickers
+        cov_matrix_annual,
+        valid_tickers,
+        radar_score_bounds=radar_score_bounds
     )
     # ==========================================
     # 輸出比較報表
@@ -2335,8 +2455,8 @@ def run_stage3_pipeline():
     # 輸出效用對決
     pref_utility_score = calc_utility(optimal_weights)
     ms_utility_score = calc_utility(max_sharpe_weights)
-    log.info(f"   偏好驅動組合 【AHP 總效用分數】 : {pref_utility_score:.4f}  <-- 系統在此維度勝出！")
-    log.info(f"   傳統最大夏普 【AHP 總效用分數】 : {ms_utility_score:.4f}")
+    log.info(f"   偏好驅動組合【偏好效用分數】: {pref_utility_score:.4f}")
+    log.info(f"   傳統最大夏普【偏好效用分數】: {ms_utility_score:.4f}")
     log.info("="*65)
 
     # 建立 report 資料夾 (若無則自動建立)
@@ -2360,8 +2480,8 @@ def run_stage3_pipeline():
         f.write(analytics_df.to_string(index=False, line_width=65, justify='right') + "\n")
         f.write("-" * 65 + "\n\n")
         
-        f.write(f"   偏好驅動組合 【AHP 總效用分數】 : {pref_utility_score:.4f}  <-- 系統在此維度勝出！\n")
-        f.write(f"   傳統最大夏普 【AHP 總效用分數】 : {ms_utility_score:.4f}\n")
+        f.write(f"   偏好驅動組合【偏好效用分數】: {pref_utility_score:.4f}\n")
+        f.write(f"   傳統最大夏普【偏好效用分數】: {ms_utility_score:.4f}\n")
         f.write("="*65 + "\n")
         
     # 2. 輸出方便 Excel 讀取的表格檔案 (.csv)
