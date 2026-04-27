@@ -4,11 +4,11 @@
 CSV_UNIVERSE_FILE = "csv\\all_etfs.csv"       # 步驟一產生的全市場排序清單
 YQ_OUTPUT_FILE = "csv\\stage0_yq_features.csv" # YQ 財務特徵的輸出檔案
 AV_DB_FILE = "json\\etf_database.json"         # AV 分散度特徵的本地資料庫
-AV_API_KEY = "TY6TXNC6W7D2YT9N"          # Alpha Vantage API Key TY6TXNC6W7D2YT9N 
+AV_API_KEY = "你的 Alpha Vantage API"          # Alpha Vantage API Key 
 AV_MAX_CALLS_PER_DAY = 25                # AV 每日安全呼叫上限
-GEMINI_API_KEY = "AIzaSyC1oULTtIEPVAI21Q8MuebxB36o0S5K8v8"
+GEMINI_API_KEY = "你的 Gemini API"
 TOP_N_ETFS = 500                         # 我們要送入 DEA 模型的候選數量
-FINNHUB_API_KEY = "d7g00o9r01qqb8rhrkvgd7g00o9r01qqb8rhrl00"  # 請填入你的 Finnhub API Key
+FINNHUB_API_KEY = "你的 Finnhub API"  # 請填入你的 Finnhub API Key
 OUTPUT_FILE = "csv\\stage0_final_matrix.csv" # 最終多維度特徵矩陣的輸出檔案
 USE_TRUE_HHI_OPTIMIZATION = True # 是否使用真正的 HHI 最小化優化（會增加計算時間），否則使用近似方法
 ALPHA_BASELINE = 0.0 # 基線模型的 alpha 預期值 (可以根據歷史數據調整)
