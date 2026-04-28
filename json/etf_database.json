@@ -2,37 +2,37 @@
     "VEA": {
         "Sector_HHI": -1.0,
         "Top3_Weight": -1.0,
-        "Sector_Weights": -1.0,
+        "Sector_Weights": {},
         "Last_Updated": "2026-04-16"
     },
     "IEFA": {
         "Sector_HHI": -1.0,
         "Top3_Weight": -1.0,
-        "Sector_Weights": -1.0,
+        "Sector_Weights": {},
         "Last_Updated": "2026-04-16"
     },
     "IEMG": {
         "Sector_HHI": -1.0,
         "Top3_Weight": -1.0,
-        "Sector_Weights": -1.0,
+        "Sector_Weights": {},
         "Last_Updated": "2026-04-16"
     },
     "VXUS": {
         "Sector_HHI": -1.0,
         "Top3_Weight": -1.0,
-        "Sector_Weights": -1.0,
+        "Sector_Weights": {},
         "Last_Updated": "2026-04-16"
     },
     "VWO": {
         "Sector_HHI": -1.0,
         "Top3_Weight": -1.0,
-        "Sector_Weights": -1.0,
+        "Sector_Weights": {},
         "Last_Updated": "2026-04-16"
     },
     "EFA": {
         "Sector_HHI": -1.0,
         "Top3_Weight": -1.0,
-        "Sector_Weights": -1.0,
+        "Sector_Weights": {},
         "Last_Updated": "2026-04-16"
     },
     "VUG": {
@@ -3288,5 +3288,287 @@
             "REAL ESTATE": 0.0
         },
         "Last_Updated": "2026-04-26"
+    },
+    "FENI": {
+        "Sector_HHI": -1.0,
+        "Top3_Weight": -1.0,
+        "Sector_Weights": {},
+        "Last_Updated": "2026-04-28"
+    },
+    "HEFA": {
+        "Sector_HHI": -1.0,
+        "Top3_Weight": -1.0,
+        "Sector_Weights": {},
+        "Last_Updated": "2026-04-28"
+    },
+    "IJT": {
+        "Sector_HHI": 0.1564,
+        "Top3_Weight": 0.0376,
+        "Sector_Weights": {
+            "INDUSTRIALS": 0.235294,
+            "INFORMATION TECHNOLOGY": 0.181818,
+            "HEALTHCARE": 0.159358,
+            "FINANCIALS": 0.151872,
+            "CONSUMER DISCRETIONARY": 0.120856,
+            "ENERGY": 0.042781,
+            "COMMUNICATION SERVICES": 0.035294,
+            "MATERIALS": 0.028877,
+            "CONSUMER STAPLES": 0.024599,
+            "UTILITIES": 0.019251,
+            "REAL ESTATE": 0.0
+        },
+        "Last_Updated": "2026-04-28"
+    },
+    "ARKK": {
+        "Sector_HHI": 0.2037,
+        "Top3_Weight": 0.2123,
+        "Sector_Weights": {
+            "HEALTHCARE": 0.274699,
+            "INFORMATION TECHNOLOGY": 0.259036,
+            "FINANCIALS": 0.163855,
+            "CONSUMER DISCRETIONARY": 0.142169,
+            "COMMUNICATION SERVICES": 0.104819,
+            "INDUSTRIALS": 0.055422,
+            "CONSUMER STAPLES": 0.0,
+            "MATERIALS": 0.0,
+            "UTILITIES": 0.0,
+            "ENERGY": 0.0,
+            "REAL ESTATE": 0.0
+        },
+        "Last_Updated": "2026-04-28"
+    },
+    "JGLO": {
+        "Sector_HHI": 0.1536,
+        "Top3_Weight": 0.161,
+        "Sector_Weights": {
+            "INFORMATION TECHNOLOGY": 0.264946,
+            "FINANCIALS": 0.164402,
+            "CONSUMER DISCRETIONARY": 0.157609,
+            "HEALTHCARE": 0.112772,
+            "COMMUNICATION SERVICES": 0.100543,
+            "INDUSTRIALS": 0.05163,
+            "UTILITIES": 0.046196,
+            "ENERGY": 0.046196,
+            "CONSUMER STAPLES": 0.038043,
+            "REAL ESTATE": 0.017663,
+            "MATERIALS": 0.0
+        },
+        "Last_Updated": "2026-04-28"
+    },
+    "SSO": {
+        "Sector_HHI": 0.1875,
+        "Top3_Weight": 0.2783,
+        "Sector_Weights": {
+            "INFORMATION TECHNOLOGY": 0.361068,
+            "FINANCIALS": 0.11146,
+            "COMMUNICATION SERVICES": 0.10989,
+            "CONSUMER DISCRETIONARY": 0.10675,
+            "INDUSTRIALS": 0.092622,
+            "HEALTHCARE": 0.089482,
+            "CONSUMER STAPLES": 0.050235,
+            "ENERGY": 0.034537,
+            "UTILITIES": 0.023548,
+            "MATERIALS": 0.020408,
+            "REAL ESTATE": 0.0
+        },
+        "Last_Updated": "2026-04-28"
+    },
+    "MCHI": {
+        "Sector_HHI": -1.0,
+        "Top3_Weight": -1.0,
+        "Sector_Weights": {},
+        "Last_Updated": "2026-04-28"
+    },
+    "DIVO": {
+        "Sector_HHI": 0.1644,
+        "Top3_Weight": 0.1628,
+        "Sector_Weights": {
+            "FINANCIALS": 0.262626,
+            "INDUSTRIALS": 0.175084,
+            "INFORMATION TECHNOLOGY": 0.163861,
+            "CONSUMER DISCRETIONARY": 0.143659,
+            "HEALTHCARE": 0.085297,
+            "ENERGY": 0.072952,
+            "CONSUMER STAPLES": 0.063973,
+            "UTILITIES": 0.022447,
+            "COMMUNICATION SERVICES": 0.010101,
+            "MATERIALS": 0.0,
+            "REAL ESTATE": 0.0
+        },
+        "Last_Updated": "2026-04-28"
+    },
+    "FNGU": {
+        "Sector_HHI": -1.0,
+        "Top3_Weight": -1.0,
+        "Sector_Weights": {},
+        "Last_Updated": "2026-04-28"
+    },
+    "FELC": {
+        "Sector_HHI": -1.0,
+        "Top3_Weight": -1.0,
+        "Sector_Weights": {},
+        "Last_Updated": "2026-04-28"
+    },
+    "TCAF": {
+        "Sector_HHI": 0.1809,
+        "Top3_Weight": 0.1944,
+        "Sector_Weights": {
+            "INFORMATION TECHNOLOGY": 0.317125,
+            "HEALTHCARE": 0.191332,
+            "CONSUMER DISCRETIONARY": 0.123679,
+            "UTILITIES": 0.104651,
+            "COMMUNICATION SERVICES": 0.087738,
+            "FINANCIALS": 0.075053,
+            "INDUSTRIALS": 0.051797,
+            "CONSUMER STAPLES": 0.036998,
+            "ENERGY": 0.010571,
+            "MATERIALS": 0.001057,
+            "REAL ESTATE": 0.0
+        },
+        "Last_Updated": "2026-04-28"
+    },
+    "VFLO": {
+        "Sector_HHI": 0.1876,
+        "Top3_Weight": 0.0997,
+        "Sector_Weights": {
+            "INFORMATION TECHNOLOGY": 0.305918,
+            "CONSUMER DISCRETIONARY": 0.178536,
+            "HEALTHCARE": 0.178536,
+            "ENERGY": 0.12337,
+            "INDUSTRIALS": 0.101304,
+            "COMMUNICATION SERVICES": 0.048144,
+            "MATERIALS": 0.047141,
+            "UTILITIES": 0.017051,
+            "CONSUMER STAPLES": 0.0,
+            "FINANCIALS": 0.0,
+            "REAL ESTATE": 0.0
+        },
+        "Last_Updated": "2026-04-28"
+    },
+    "XMMO": {
+        "Sector_HHI": 0.2491,
+        "Top3_Weight": 0.1043,
+        "Sector_Weights": {
+            "INDUSTRIALS": 0.450226,
+            "INFORMATION TECHNOLOGY": 0.13914,
+            "MATERIALS": 0.09276,
+            "ENERGY": 0.075792,
+            "UTILITIES": 0.071267,
+            "HEALTHCARE": 0.050905,
+            "FINANCIALS": 0.048643,
+            "CONSUMER DISCRETIONARY": 0.047511,
+            "COMMUNICATION SERVICES": 0.0181,
+            "CONSUMER STAPLES": 0.005656,
+            "REAL ESTATE": 0.0
+        },
+        "Last_Updated": "2026-04-28"
+    },
+    "ESGE": {
+        "Sector_HHI": -1.0,
+        "Top3_Weight": -1.0,
+        "Sector_Weights": {},
+        "Last_Updated": "2026-04-28"
+    },
+    "INDA": {
+        "Sector_HHI": -1.0,
+        "Top3_Weight": -1.0,
+        "Sector_Weights": {},
+        "Last_Updated": "2026-04-28"
+    },
+    "KWEB": {
+        "Sector_HHI": -1.0,
+        "Top3_Weight": -1.0,
+        "Sector_Weights": {},
+        "Last_Updated": "2026-04-28"
+    },
+    "FMDE": {
+        "Sector_HHI": -1.0,
+        "Top3_Weight": -1.0,
+        "Sector_Weights": {},
+        "Last_Updated": "2026-04-28"
+    },
+    "AKRE": {
+        "Sector_HHI": -1.0,
+        "Top3_Weight": -1.0,
+        "Sector_Weights": {},
+        "Last_Updated": "2026-04-28"
+    },
+    "BBAX": {
+        "Sector_HHI": -1.0,
+        "Top3_Weight": -1.0,
+        "Sector_Weights": {},
+        "Last_Updated": "2026-04-28"
+    },
+    "BBIN": {
+        "Sector_HHI": -1.0,
+        "Top3_Weight": -1.0,
+        "Sector_Weights": {},
+        "Last_Updated": "2026-04-28"
+    },
+    "JAVA": {
+        "Sector_HHI": 0.124,
+        "Top3_Weight": 0.0775,
+        "Sector_Weights": {
+            "FINANCIALS": 0.199782,
+            "HEALTHCARE": 0.157205,
+            "INDUSTRIALS": 0.149563,
+            "INFORMATION TECHNOLOGY": 0.098253,
+            "COMMUNICATION SERVICES": 0.082969,
+            "CONSUMER DISCRETIONARY": 0.081878,
+            "ENERGY": 0.069869,
+            "CONSUMER STAPLES": 0.065502,
+            "UTILITIES": 0.052402,
+            "MATERIALS": 0.042576,
+            "REAL ESTATE": 0.0
+        },
+        "Last_Updated": "2026-04-28"
+    },
+    "XAR": {
+        "Sector_HHI": 1.0,
+        "Top3_Weight": 0.1002,
+        "Sector_Weights": {
+            "INDUSTRIALS": 1.0,
+            "INFORMATION TECHNOLOGY": 0.0,
+            "COMMUNICATION SERVICES": 0.0,
+            "CONSUMER DISCRETIONARY": 0.0,
+            "HEALTHCARE": 0.0,
+            "CONSUMER STAPLES": 0.0,
+            "MATERIALS": 0.0,
+            "UTILITIES": 0.0,
+            "ENERGY": 0.0,
+            "FINANCIALS": 0.0,
+            "REAL ESTATE": 0.0
+        },
+        "Last_Updated": "2026-04-28"
+    },
+    "VOOV": {
+        "Sector_HHI": 0.1195,
+        "Top3_Weight": 0.1304,
+        "Sector_Weights": {
+            "INFORMATION TECHNOLOGY": 0.169811,
+            "FINANCIALS": 0.157233,
+            "HEALTHCARE": 0.127883,
+            "INDUSTRIALS": 0.1174,
+            "CONSUMER DISCRETIONARY": 0.111111,
+            "CONSUMER STAPLES": 0.101677,
+            "ENERGY": 0.087002,
+            "UTILITIES": 0.050314,
+            "MATERIALS": 0.039832,
+            "COMMUNICATION SERVICES": 0.037736,
+            "REAL ESTATE": 0.0
+        },
+        "Last_Updated": "2026-04-28"
+    },
+    "VSGX": {
+        "Sector_HHI": -1.0,
+        "Top3_Weight": -1.0,
+        "Sector_Weights": {},
+        "Last_Updated": "2026-04-28"
+    },
+    "FXI": {
+        "Sector_HHI": -1.0,
+        "Top3_Weight": -1.0,
+        "Sector_Weights": {},
+        "Last_Updated": "2026-04-28"
     }
 }
